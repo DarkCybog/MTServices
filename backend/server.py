@@ -466,8 +466,11 @@ async def get_user_dashboard(user_id: str):
         payments = await db.payments.find({"tasker_id": user_id, "status": "completed"}).to_list(100)
         earnings = sum([payment["amount"] for payment in payments])
     
+    # Convert user to User model to handle serialization
+    user_obj = User(**user)
+    
     return {
-        "user": user,
+        "user": user_obj.dict(),
         "client_tasks": len(client_tasks),
         "tasker_tasks": len(tasker_tasks),
         "total_earnings": earnings,
